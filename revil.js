@@ -1,4 +1,6 @@
-var Revil = (function Revil() {
+Revil = (function Revil() {
+
+    var deepmerge = require("deepmerge");
 
     var _private = {
         "ws": undefined, // Websocket connection
@@ -53,13 +55,20 @@ var Revil = (function Revil() {
 
         var _this = this;
 
-        _this.addRoute = function (route, action) {
-            console.error("Not implemented yet");
-            //_private.routes[route] = action;
+
+        _this.addRoute = function (address, action) {
+            var route = address.split("/");
+            var routed = action;
+            for (var i = route.length - 1; 0 < i; i--) {
+                var temp = routed;
+                routed = {};
+                routed[route[i]] = temp;
+            }
+            _this.addRoutes(routed);
         };
 
-        _this.setRoutes = function (routes) {
-            _private.routes = routes;
+        _this.addRoutes = function (routes) {
+            _private.routes = deepmerge(_private.routes, routes);
         };
 
         _this.send = function (address, args, success) {
@@ -76,6 +85,8 @@ var Revil = (function Revil() {
             }
             else {
                 console.warn("Sending to unknown route '" + address + "'");
+                if (success !== undefined)
+                    success();
             }
         };
 

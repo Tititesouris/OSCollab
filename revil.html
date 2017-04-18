@@ -7,30 +7,45 @@
     <link rel="stylesheet" href="res/style.css"/>
 </head>
 <body>
+<button onclick="btnClick()">Boop</button>
 <script src="node_modules/osc/dist/osc-browser.min.js"></script>
-<script src="revil.js"></script>
+<script src="bundle.js"></script>
 <script>
     var revil = new Revil("127.0.0.1", 8211);
 
-    revil.setRoutes({
+    var pads = [];
+
+    var padActions = {
+        "position": function (position) {
+            var x = position[0], y = position[1], z = position[2];
+            console.log("Moving to " + x + ", " + y + ", " + z);
+        }
+    };
+
+    revil.addRoutes({
         "revil": {
             "scene": {
-                "shape": {
-                    "position": function (position) {
-                        position[0] += 5;
-                        revil.send("/revil/scene/shape/position", position, function () {
-                            console.log("ACK position");
-                        });
-                    },
-                    "rotation": function (rotation) {
-                        rotation[0] += 5;
-                        revil.send("/revil/scene/shape/rotation", rotation);
-                    }
+                "add_shape": function (args) {
+                    var name = args[0];
+                    console.log("Adding shape " + name);
+                    pads.push(name);
+                    revil.addRoute("/revil/scene/" + name, padActions);
                 }
             }
         }
     });
 
+    //(node:14679) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added. Use emitter.setMaxListeners() to increase limit
+
+
+    var btnClick = function () {
+        var name = "shape77";
+        revil.send("/revil/scene/add_shape", name, function () {
+            revil.send("/+revil/scene/" + name + "/position", "127.0.0.1:7000", function () {
+                console.log("BEEp");
+            });
+        });
+    };
 </script>
 </body>
 </html>
