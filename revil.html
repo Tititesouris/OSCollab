@@ -7,29 +7,124 @@
     <link rel="stylesheet" href="res/style.css"/>
 </head>
 <body>
+
+<canvas id="viewport" width="800" height="500"></canvas>
+<br/>
 <button onclick="btnClick()">Boop</button>
+
 <script src="node_modules/osc/dist/osc-browser.min.js"></script>
 <script src="bundle.js"></script>
 <script>
     var revil = new Revil("127.0.0.1", 8211);
+    var colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "00ffff", "ff00ff"];
 
     var pads = [];
 
-    var padActions = {
-        "position": function (position) {
-            var x = position[0], y = position[1], z = position[2];
-            console.log("Moving to " + x + ", " + y + ", " + z);
+    var canvas = document.getElementById("viewport").getContext("2d");
+
+    var drawShape = function (x, y, width, height, color, colorProperty, drawMethod, endMethod) {
+        canvas[colorProperty] = color;
+        canvas.beginPath();
+        canvas[drawMethod](x, y, width, height);
+        canvas[endMethod]();
+    };
+
+    var drawRect = function (x, y, width, height, color, fill) {
+        if (fill)
+            drawShape(x, y, width, height, color, "fillStyle", "fillRect", "fill");
+        else
+            drawShape(x, y, width, height, color, "strokeStyle", "rect", "stroke");
+    };
+
+    var draw = function () {
+        drawRect(0, 0, 800, 500, "#ffffff", true);
+
+        for (var i = 0; i < pads.length; i++) {
+            var pad = pads[i];
+            drawRect(pad.position.x, pad.position.y, pad.dimensions.width, pad.dimensions.height, pad.color, true);
+            drawRect(pad.position.x, pad.position.y, pad.dimensions.width, pad.dimensions.height, "#000000", false);
+
+
+        }
+    };
+    window.setInterval(draw, 500);
+
+
+    var Pad = function (name, theme, color, dimensions, position, rotation) {
+        this.name = name;
+        this.theme = theme || 1;
+        this.color = color || colors[Math.floor(Math.random() * colors.length)];
+        this.dimensions = dimensions || {width: 100, height: 100, depth: 100};
+        this.position = position || {x: 0, y: 0, z: 0};
+        this.rotation = rotation || {rx: 0, ry: 0, rz: 0};
+    };
+
+    var getPad = function (name) {
+        for (var i = 0; i < pads.length; i++) {
+            if (pads[i].name === name)
+                return pads[i];
+        }
+        return null;
+    };
+
+    var getPadRoutes = function (name) {
+        return {
+            "dimensions": function (dimensions) {
+                var width = dimensions[0], height = dimensions[1], depth = dimensions[2];
+                var pad = getPad(name);
+                pad.dimensions = {width: width, height: height, depth: depth};
+                console.log("Pad '" + name + "' changing dimensions to " + width + ", " + height + ", " + depth);
+            },
+            "position": function (position) {
+                var x = position[0], y = position[1], z = position[2];
+                var pad = getPad(name);
+                pad.position = {x: x, y: y, z: z};
+                console.log("Pad '" + name + "' moving to " + x + ", " + y + ", " + z);
+            },
+            "remove": function () {
+                console.log("This does not work");
+            }
+        }
+    };
+
+    var setPadTheme = function (name, theme) {
+        revil.send("/revil/scene/" + name + "/revealed_by", ["" + theme], function () {
+            console.log("Set theme " + theme + " to " + name);
+        });
+    };
+
+    var addPad = function (name, theme, color, dimensions, position, rotation) {
+        revil.send("/revil/scene/add_shape", [name], function () {
+            pads.push(new Pad(name, theme, color, dimensions, position, rotation));
+            revil.addRoute("/revil/scene/" + name, getPadRoutes(name));
+            setPadTheme(name, theme);
+        });
+    };
+
+    var updateMarker = function (id, position, rotation) {
+        var padName = "pad_" + id;
+        var pad = getPad(padName);
+        if (pad === null) {
+            addPad(padName, id % 3 + 1, undefined, undefined, position, rotation);
+        }
+        else {
+            pad.position = position;
+            pad.rotation = rotation;
         }
     };
 
     revil.addRoutes({
         "revil": {
-            "scene": {
-                "add_shape": function (args) {
-                    var name = args[0];
-                    console.log("Adding shape " + name);
-                    pads.push(name);
-                    revil.addRoute("/revil/scene/" + name, padActions);
+            "spaces": {
+                "space": {
+                    "depthcam": {
+                        "marker_output": function (args) { // TODO replace with position of markers
+                            var id = args[0];
+                            var position = {x: args[1], y: args[2], z: args[3]};
+                            var rotation = {rx: args[4], ry: args[5], rz: args[6]};
+                            updateMarker(id, position, rotation);
+                        }
+                    }
                 }
             }
         }
@@ -39,12 +134,13 @@
 
 
     var btnClick = function () {
-        var name = "shape77";
-        revil.send("/revil/scene/add_shape", name, function () {
-            revil.send("/+revil/scene/" + name + "/position", "127.0.0.1:7000", function () {
-                console.log("BEEp");
-            });
-        });
+        /*var name = "shape77";
+         revil.send("/revil/scene/add_shape", name, function () {
+         revil.send("/+revil/scene/" + name + "/position", "127.0.0.1:7000", function () {
+         console.log("BEEp");
+         });
+         });*/
+        console.log(pads);
     };
 </script>
 </body>
