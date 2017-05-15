@@ -47,7 +47,45 @@
 
         }
     };
-    window.setInterval(draw, 500);
+
+    // Returns true if padA and padB are collaborating according to the detection method
+    var areCollaborating = function (padA, padB, method) {
+        return method(padA, padB);
+    };
+    // Collaboration detection methods
+    var proxemicsDetection = function (padA, padB) {
+        var deltaX = padA.position.x - padB.position.x;
+        var deltaY = padA.position.y - padB.position.y;
+        var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        return distance <= 2;
+    };
+
+    // Changes the theme of padA and padB according to the affectation method
+    var collaborate = function(padA, padB, method) {
+        padA.theme = method(padA, padB);
+        padB.theme = method(padA, padB);
+    };
+    // Collaboration affectation methods
+    var additiveAffectation = function (padA, padB) {
+        return padA.theme + "+" + padB.theme;
+    };
+
+    var update = function () {
+        for (var i = 0; i < pads.length; i++) {
+            for (var j = 0; j < pads.length; j++) {
+                var padA = pads[i];
+                var padB = pads[j];
+                if (padA.name !== padB.name) {
+                    if (areCollaborating(padA, padB, proxemicsDetection)) {
+                        collaborate(padA, padB, additiveAffectation);
+                    }
+                }
+            }
+        }
+
+        draw();
+    };
+    window.setInterval(update, 200);
 
 
     var Pad = function (name, theme, color, dimensions, position, rotation) {
@@ -67,50 +105,72 @@
         return null;
     };
 
-    var getPadRoutes = function (name) {
-        return {
-            "dimensions": function (dimensions) {
-                var width = dimensions[0], height = dimensions[1], depth = dimensions[2];
-                var pad = getPad(name);
-                pad.dimensions = {width: width, height: height, depth: depth};
-                console.log("Pad '" + name + "' changing dimensions to " + width + ", " + height + ", " + depth);
-            },
-            "position": function (position) {
-                var x = position[0], y = position[1], z = position[2];
-                var pad = getPad(name);
-                pad.position = {x: x, y: y, z: z};
-                console.log("Pad '" + name + "' moving to " + x + ", " + y + ", " + z);
-            },
-            "remove": function () {
-                console.log("This does not work");
-            }
-        }
+    var configuration = {
+        "shape_1": ["1"], // Revealed by theme 1
+        "shape_2": ["2"], // Revealed by theme 2
+        "shape_3": ["1", "2"], // Revealed by both theme 1 and 2
+        "shape_4": ["1+2"] // Revealed only when theme 1 and 2 collaborate
     };
 
-    var setPadTheme = function (name, theme) {
-        revil.send("/revil/scene/" + name + "/revealed_by", ["" + theme], function () {
-            console.log("Set theme " + theme + " to " + name);
-        });
+    // Triggers when the shape 'shape' gets revealed by the pad 'padName'
+    var revealed = function (shape, padName) {
+        var pad = getPad(padName);
+        if (pad !== null) {
+            var themes = configuration[shape];
+            for (var i = 0; i < themes.length; i++) {
+                if (themes[i] === pad.theme) {
+                    revil.send("/revil/scene/" + shape + "/revealed_by", [pad.theme], function () {
+                        console.log("Changed revealed_by of " + shape + " to " + pad.theme);
+                    });
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    var getShapeRoute = function (shape) {
+        return {
+            "revealed_name": function (args) {
+                revealed(shape, "pad_" + args[0]);
+            }
+        };
+    };
+
+    var getShapesRoutes = function () {
+        var routes = {};
+        for (var shape in configuration) {
+            if (configuration.hasOwnProperty(shape)) {
+                routes[shape] = getShapeRoute(shape);
+            }
+        }
+        return routes;
     };
 
     var addPad = function (name, theme, color, dimensions, position, rotation) {
         revil.send("/revil/scene/add_shape", [name], function () {
-            pads.push(new Pad(name, theme, color, dimensions, position, rotation));
-            revil.addRoute("/revil/scene/" + name, getPadRoutes(name));
-            setPadTheme(name, theme);
+            var pad = new Pad(name, theme, color, dimensions, position, rotation);
+            pads.push(pad);
         });
     };
 
-    var updateMarker = function (id, position, rotation) {
+    // Triggers when a marker is detected
+    var updatePad = function (id, position, rotation) {
         var padName = "pad_" + id;
         var pad = getPad(padName);
         if (pad === null) {
-            addPad(padName, id % 3 + 1, undefined, undefined, position, rotation);
+            addPad(padName, "" + (id % 3 + 1), undefined, undefined, position, rotation);
         }
         else {
             pad.position = position;
             pad.rotation = rotation;
         }
+        revil.send("/revil/scene/" + padName + "/position", [pad.position], function () {
+            console.log("Updated " + padName + " position from markers");
+        });
+        revil.send("/revil/scene/" + padName + "/rotation", [pad.rotation], function () {
+            console.log("Updated " + padName + " rotation from markers");
+        });
     };
 
     revil.addRoutes({
@@ -118,15 +178,16 @@
             "spaces": {
                 "space": {
                     "depthcam": {
-                        "marker_output": function (args) { // TODO replace with position of markers
+                        "marker_output": function (args) {
                             var id = args[0];
                             var position = {x: args[1], y: args[2], z: args[3]};
                             var rotation = {rx: args[4], ry: args[5], rz: args[6]};
-                            updateMarker(id, position, rotation);
+                            updatePad(id, position, rotation);
                         }
                     }
                 }
-            }
+            },
+            "scene": getShapesRoutes()
         }
     });
 
@@ -134,12 +195,6 @@
 
 
     var btnClick = function () {
-        /*var name = "shape77";
-         revil.send("/revil/scene/add_shape", name, function () {
-         revil.send("/+revil/scene/" + name + "/position", "127.0.0.1:7000", function () {
-         console.log("BEEp");
-         });
-         });*/
         console.log(pads);
     };
 </script>

@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Revil>
+  <Attributes>
+    <open>
+      <String value=""/>
+      <Listeners/>
+    </open>
+    <save>
+      <String value="/home/quentin/WebstormProjects/OSCollab/test"/>
+      <Listeners/>
+    </save>
+    <quit>
+      <Listeners/>
+    </quit>
+  </Attributes>
+  <Modules>
+    <Spaces>
+      <Attributes>
+        <add_space/>
+      </Attributes>
+      <Modules>
+        <Preview>
+          <Attributes>
+            <active>
+              <Bool value="1"/>
+            </active>
+            <look_at>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </look_at>
+            <from>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="-700"/>
+            </from>
+          </Attributes>
+        </Preview>
+        <Space>
+          <Attributes>
+            <name>
+              <String value="space"/>
+            </name>
+            <add_projector/>
+            <add_depth_camera/>
+            <add_depth_shape/>
+          </Attributes>
+          <Modules>
+            <DepthCam>
+              <Attributes>
+                <name>
+                  <String value="depthcam"/>
+                </name>
+                <remove/>
+                <visible>
+                  <Bool value="1"/>
+                </visible>
+                <open_device>
+                  <String value="1d27/0601@2/4"/>
+                </open_device>
+                <mode>
+                  <String value="320x240x60"/>
+                </mode>
+                <filter>
+                  <Bool value="0"/>
+                </filter>
+                <contour_threshold>
+                  <Float value="50"/>
+                </contour_threshold>
+                <calibrate_with_projector>
+                  <String value="none"/>
+                </calibrate_with_projector>
+                <position>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="-700"/>
+                </position>
+                <scale>
+                  <Float value="1"/>
+                  <Float value="1"/>
+                  <Float value="1"/>
+                </scale>
+                <quaternion>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                </quaternion>
+                <rotation>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                </rotation>
+                <absolute_position>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="-700"/>
+                </absolute_position>
+                <detect_markers>
+                  <Bool value="0"/>
+                </detect_markers>
+                <marker_output>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                </marker_output>
+              </Attributes>
+              <Modules/>
+            </DepthCam>
+            <Projector>
+              <Attributes>
+                <name>
+                  <String value="projector"/>
+                </name>
+                <remove/>
+                <active>
+                  <Bool value="1"/>
+                </active>
+                <window_dimensions>
+                  <Int value="0"/>
+                  <Int value="0"/>
+                  <Int value="640"/>
+                  <Int value="480"/>
+                </window_dimensions>
+                <fullscreen_monitor>
+                  <String value="windowed"/>
+                </fullscreen_monitor>
+                <view_matrix>
+                  <Float value="1"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="1"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="-1"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="1"/>
+                </view_matrix>
+                <projection_matrix>
+                  <Float value="1.34444"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="1.79259"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="-1.0202"/>
+                  <Float value="-1"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="-202.02"/>
+                  <Float value="0"/>
+                </projection_matrix>
+                <mirrored>
+                  <Bool value="0"/>
+                </mirrored>
+                <position>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="-700"/>
+                </position>
+                <scale>
+                  <Float value="1"/>
+                  <Float value="1"/>
+                  <Float value="1"/>
+                </scale>
+                <quaternion>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                </quaternion>
+                <rotation>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                </rotation>
+                <absolute_position>
+                  <Float value="0"/>
+                  <Float value="0"/>
+                  <Float value="-700"/>
+                </absolute_position>
+                <attached_to_camera>
+                  <String value="none"/>
+                </attached_to_camera>
+                <calibrate_with_camera>
+                  <String value="none"/>
+                </calibrate_with_camera>
+                <output_revealed>
+                  <Bool value="1"/>
+                </output_revealed>
+              </Attributes>
+            </Projector>
+          </Modules>
+        </Space>
+      </Modules>
+    </Spaces>
+    <Scene>
+      <Attributes>
+        <add_shape>
+          <String value="shape"/>
+        </add_shape>
+        <add_model>
+          <String value="model"/>
+        </add_model>
+        <add_path>
+          <String value="path"/>
+        </add_path>
+        <add_text>
+          <String value="text"/>
+        </add_text>
+        <add_cut>
+          <String value="cut"/>
+        </add_cut>
+        <add_group>
+          <String value="group"/>
+        </add_group>
+      </Attributes>
+      <Modules>
+        <Shape>
+          <Attributes>
+            <name>
+              <String value="shape_1"/>
+              <Listeners>
+                <OscListener>
+                  <Parameter value="/revil/scene/shape_1/name"/>
+                  <Parameter value="127.0.0.1:7000"/>
+                </OscListener>
+              </Listeners>
+            </name>
+            <remove/>
+            <visible>
+              <Bool value="1"/>
+            </visible>
+            <visible_from>
+              <String value="all"/>
+            </visible_from>
+            <revealed_by>
+              <String value="all"/>
+            </revealed_by>
+            <shape>
+              <String value="box"/>
+            </shape>
+            <dimensions>
+              <Float value="100"/>
+              <Float value="100"/>
+              <Float value="100"/>
+            </dimensions>
+            <position>
+              <Float value="200"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </position>
+            <scale>
+              <Float value="1"/>
+              <Float value="1"/>
+              <Float value="1"/>
+            </scale>
+            <quaternion>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </quaternion>
+            <rotation>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </rotation>
+            <absolute_position>
+              <Float value="200"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </absolute_position>
+            <color>
+              <Float value="360"/>
+              <Float value="0"/>
+              <Float value="100"/>
+            </color>
+            <surface>
+              <String value="color"/>
+            </surface>
+            <surface_thickness>
+              <Float value="1"/>
+            </surface_thickness>
+            <surface_texture>
+              <String value=""/>
+            </surface_texture>
+            <inside>
+              <String value="gradient_color"/>
+            </inside>
+            <inside_axes>
+              <String value="local"/>
+            </inside_axes>
+            <gradient_type>
+              <String value="centered"/>
+            </gradient_type>
+            <texture>
+              <String value=""/>
+            </texture>
+            <texture_layers_folder>
+              <String value=""/>
+            </texture_layers_folder>
+            <texture_offset>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </texture_offset>
+            <texture_scale>
+              <Float value="1"/>
+              <Float value="1"/>
+              <Float value="1"/>
+            </texture_scale>
+            <layer_anim_position>
+              <Float value="0"/>
+            </layer_anim_position>
+            <layer_anim_play>
+              <Bool value="0"/>
+            </layer_anim_play>
+            <layer_anim_speed>
+              <Float value="1"/>
+            </layer_anim_speed>
+            <revealed_name>
+              <String value="name"/>
+            </revealed_name>
+            <revealed_surface>
+              <Float value="0"/>
+            </revealed_surface>
+            <revealed_inside>
+              <Float value="0"/>
+            </revealed_inside>
+            <revealed_center>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_center>
+            <revealed_extent>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_extent>
+            <revealed_color>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_color>
+          </Attributes>
+        </Shape>
+        <Shape>
+          <Attributes>
+            <name>
+              <String value="shape_2"/>
+              <Listeners>
+                <OscListener>
+                  <Parameter value="/revil/scene/shape_2/name"/>
+                  <Parameter value="127.0.0.1:7000"/>
+                </OscListener>
+              </Listeners>
+            </name>
+            <remove/>
+            <visible>
+              <Bool value="1"/>
+            </visible>
+            <visible_from>
+              <String value="all"/>
+            </visible_from>
+            <revealed_by>
+              <String value="all"/>
+            </revealed_by>
+            <shape>
+              <String value="sphere"/>
+            </shape>
+            <dimensions>
+              <Float value="100"/>
+              <Float value="100"/>
+              <Float value="100"/>
+            </dimensions>
+            <position>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </position>
+            <scale>
+              <Float value="1"/>
+              <Float value="1"/>
+              <Float value="1"/>
+            </scale>
+            <quaternion>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </quaternion>
+            <rotation>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </rotation>
+            <absolute_position>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </absolute_position>
+            <color>
+              <Float value="360"/>
+              <Float value="0"/>
+              <Float value="100"/>
+            </color>
+            <surface>
+              <String value="color"/>
+            </surface>
+            <surface_thickness>
+              <Float value="1"/>
+            </surface_thickness>
+            <surface_texture>
+              <String value=""/>
+            </surface_texture>
+            <inside>
+              <String value="gradient_color"/>
+            </inside>
+            <inside_axes>
+              <String value="local"/>
+            </inside_axes>
+            <gradient_type>
+              <String value="centered"/>
+            </gradient_type>
+            <texture>
+              <String value=""/>
+            </texture>
+            <texture_layers_folder>
+              <String value=""/>
+            </texture_layers_folder>
+            <texture_offset>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </texture_offset>
+            <texture_scale>
+              <Float value="1"/>
+              <Float value="1"/>
+              <Float value="1"/>
+            </texture_scale>
+            <layer_anim_position>
+              <Float value="0"/>
+            </layer_anim_position>
+            <layer_anim_play>
+              <Bool value="0"/>
+            </layer_anim_play>
+            <layer_anim_speed>
+              <Float value="1"/>
+            </layer_anim_speed>
+            <revealed_name>
+              <String value="name"/>
+            </revealed_name>
+            <revealed_surface>
+              <Float value="0"/>
+            </revealed_surface>
+            <revealed_inside>
+              <Float value="0"/>
+            </revealed_inside>
+            <revealed_center>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_center>
+            <revealed_extent>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_extent>
+            <revealed_color>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_color>
+          </Attributes>
+        </Shape>
+        <Shape>
+          <Attributes>
+            <name>
+              <String value="shape_3"/>
+              <Listeners>
+                <OscListener>
+                  <Parameter value="/revil/scene/shape_3/name"/>
+                  <Parameter value="127.0.0.1:7000"/>
+                </OscListener>
+              </Listeners>
+            </name>
+            <remove/>
+            <visible>
+              <Bool value="1"/>
+            </visible>
+            <visible_from>
+              <String value="all"/>
+            </visible_from>
+            <revealed_by>
+              <String value="all"/>
+            </revealed_by>
+            <shape>
+              <String value="tube"/>
+            </shape>
+            <dimensions>
+              <Float value="100"/>
+              <Float value="100"/>
+              <Float value="100"/>
+            </dimensions>
+            <position>
+              <Float value="-200"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </position>
+            <scale>
+              <Float value="1"/>
+              <Float value="1"/>
+              <Float value="1"/>
+            </scale>
+            <quaternion>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </quaternion>
+            <rotation>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </rotation>
+            <absolute_position>
+              <Float value="-200"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </absolute_position>
+            <color>
+              <Float value="360"/>
+              <Float value="0"/>
+              <Float value="100"/>
+            </color>
+            <surface>
+              <String value="color"/>
+            </surface>
+            <surface_thickness>
+              <Float value="1"/>
+            </surface_thickness>
+            <surface_texture>
+              <String value=""/>
+            </surface_texture>
+            <inside>
+              <String value="gradient_color"/>
+            </inside>
+            <inside_axes>
+              <String value="local"/>
+            </inside_axes>
+            <gradient_type>
+              <String value="centered"/>
+            </gradient_type>
+            <texture>
+              <String value=""/>
+            </texture>
+            <texture_layers_folder>
+              <String value=""/>
+            </texture_layers_folder>
+            <texture_offset>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </texture_offset>
+            <texture_scale>
+              <Float value="1"/>
+              <Float value="1"/>
+              <Float value="1"/>
+            </texture_scale>
+            <layer_anim_position>
+              <Float value="0"/>
+            </layer_anim_position>
+            <layer_anim_play>
+              <Bool value="0"/>
+            </layer_anim_play>
+            <layer_anim_speed>
+              <Float value="1"/>
+            </layer_anim_speed>
+            <revealed_name>
+              <String value="name"/>
+            </revealed_name>
+            <revealed_surface>
+              <Float value="0"/>
+            </revealed_surface>
+            <revealed_inside>
+              <Float value="0"/>
+            </revealed_inside>
+            <revealed_center>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_center>
+            <revealed_extent>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_extent>
+            <revealed_color>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_color>
+          </Attributes>
+        </Shape>
+        <Shape>
+          <Attributes>
+            <name>
+              <String value="shape_4"/>
+              <Listeners>
+                <OscListener>
+                  <Parameter value="/revil/scene/shape_4/name"/>
+                  <Parameter value="127.0.0.1:7000"/>
+                </OscListener>
+              </Listeners>
+            </name>
+            <remove/>
+            <visible>
+              <Bool value="1"/>
+            </visible>
+            <visible_from>
+              <String value="all"/>
+            </visible_from>
+            <revealed_by>
+              <String value="all"/>
+            </revealed_by>
+            <shape>
+              <String value="cone"/>
+            </shape>
+            <dimensions>
+              <Float value="100"/>
+              <Float value="100"/>
+              <Float value="100"/>
+            </dimensions>
+            <position>
+              <Float value="0"/>
+              <Float value="200"/>
+              <Float value="0"/>
+            </position>
+            <scale>
+              <Float value="1"/>
+              <Float value="1"/>
+              <Float value="1"/>
+            </scale>
+            <quaternion>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </quaternion>
+            <rotation>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </rotation>
+            <absolute_position>
+              <Float value="0"/>
+              <Float value="200"/>
+              <Float value="0"/>
+            </absolute_position>
+            <color>
+              <Float value="360"/>
+              <Float value="0"/>
+              <Float value="100"/>
+            </color>
+            <surface>
+              <String value="color"/>
+            </surface>
+            <surface_thickness>
+              <Float value="1"/>
+            </surface_thickness>
+            <surface_texture>
+              <String value=""/>
+            </surface_texture>
+            <inside>
+              <String value="gradient_color"/>
+            </inside>
+            <inside_axes>
+              <String value="local"/>
+            </inside_axes>
+            <gradient_type>
+              <String value="centered"/>
+            </gradient_type>
+            <texture>
+              <String value=""/>
+            </texture>
+            <texture_layers_folder>
+              <String value=""/>
+            </texture_layers_folder>
+            <texture_offset>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </texture_offset>
+            <texture_scale>
+              <Float value="1"/>
+              <Float value="1"/>
+              <Float value="1"/>
+            </texture_scale>
+            <layer_anim_position>
+              <Float value="0"/>
+            </layer_anim_position>
+            <layer_anim_play>
+              <Bool value="0"/>
+            </layer_anim_play>
+            <layer_anim_speed>
+              <Float value="1"/>
+            </layer_anim_speed>
+            <revealed_name>
+              <String value="name"/>
+            </revealed_name>
+            <revealed_surface>
+              <Float value="0"/>
+            </revealed_surface>
+            <revealed_inside>
+              <Float value="0"/>
+            </revealed_inside>
+            <revealed_center>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_center>
+            <revealed_extent>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_extent>
+            <revealed_color>
+              <Float value="0"/>
+              <Float value="0"/>
+              <Float value="0"/>
+            </revealed_color>
+          </Attributes>
+        </Shape>
+      </Modules>
+    </Scene>
+  </Modules>
+</Revil>
