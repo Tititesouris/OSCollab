@@ -48,11 +48,40 @@
         }
     };
 
-    // Returns true if padA and padB are collaborating according to the detection method
-    var areCollaborating = function (padA, padB, method) {
-        return method(padA, padB);
+
+
+    var Pad = function (markerId, theme, color, dimensions, position, rotation) {
+        this.markerId = markerId;
+        this.theme = theme || "1";
+        this.color = color || colors[Math.floor(Math.random() * colors.length)];
+        this.dimensions = dimensions || {width: 100, height: 100, depth: 100};
+        this.position = position || {x: 0, y: 0, z: 0};
+        this.rotation = rotation || {rx: 0, ry: 0, rz: 0};
     };
-    // Collaboration detection methods
+
+    var getPad = function (markerId) {
+        for (var i = 0; i < pads.length; i++) {
+            if (pads[i].markerId === markerId)
+                return pads[i];
+        }
+        return null;
+    };
+
+    var addPad = function (markerId, theme, color, dimensions, position, rotation) {
+        revil.send("/revil/scene/add_shape", ["pad_" + markerId], function () {
+            var pad = new Pad(markerId, theme, color, dimensions, position, rotation);
+            pads.push(pad);
+        });
+    };
+
+    var shapes = {
+        "shape_1": ["1"], // Revealed by theme 1
+        "shape_2": ["2"], // Revealed by theme 2
+        "shape_3": ["1", "2"], // Revealed by both theme 1 and 2
+        "shape_4": ["1+2"] // Revealed only when theme 1 and 2 collaborate
+    };
+
+    // Detect collaboration based on proximity of the pads
     var proxemicsDetection = function (padA, padB) {
         var deltaX = padA.position.x - padB.position.x;
         var deltaY = padA.position.y - padB.position.y;
@@ -60,17 +89,29 @@
         return distance <= 2;
     };
 
-    // Changes the theme of padA and padB according to the affectation method
-    var collaborate = function(padA, padB, method) {
-        padA.theme = method(padA, padB);
-        padB.theme = method(padA, padB);
+    // Detect collaboration based on orientation of the pads
+    var compassDetection = function (padA, padB) {
+        return false;
     };
-    // Collaboration affectation methods
+
+    // Changes both pads' theme to the combined theme of the pads
     var additiveAffectation = function (padA, padB) {
         return padA.theme + "+" + padB.theme;
     };
 
-    var update = function () {
+    // Returns true if padA and padB are collaborating according to the detection method
+    var areCollaborating = function (padA, padB, method) {
+        return method(padA, padB);
+    };
+
+    // Changes the theme of padA and padB according to the affectation method
+    var collaborate = function (padA, padB, method) {
+        padA.theme = method(padA, padB);
+        padB.theme = method(padA, padB);
+    };
+
+    // Checks for collaboration between pads
+    var updateCollaboration = function () {
         for (var i = 0; i < pads.length; i++) {
             for (var j = 0; j < pads.length; j++) {
                 var padA = pads[i];
@@ -82,94 +123,56 @@
                 }
             }
         }
-
-        draw();
-    };
-    window.setInterval(update, 200);
-
-
-    var Pad = function (name, theme, color, dimensions, position, rotation) {
-        this.name = name;
-        this.theme = theme || 1;
-        this.color = color || colors[Math.floor(Math.random() * colors.length)];
-        this.dimensions = dimensions || {width: 100, height: 100, depth: 100};
-        this.position = position || {x: 0, y: 0, z: 0};
-        this.rotation = rotation || {rx: 0, ry: 0, rz: 0};
     };
 
-    var getPad = function (name) {
-        for (var i = 0; i < pads.length; i++) {
-            if (pads[i].name === name)
-                return pads[i];
-        }
-        return null;
-    };
-
-    var configuration = {
-        "shape_1": ["1"], // Revealed by theme 1
-        "shape_2": ["2"], // Revealed by theme 2
-        "shape_3": ["1", "2"], // Revealed by both theme 1 and 2
-        "shape_4": ["1+2"] // Revealed only when theme 1 and 2 collaborate
-    };
-
-    // Triggers when the shape 'shape' gets revealed by the pad 'padName'
-    var revealed = function (shape, padName) {
-        var pad = getPad(padName);
-        if (pad !== null) {
-            var themes = configuration[shape];
-            for (var i = 0; i < themes.length; i++) {
-                if (themes[i] === pad.theme) {
-                    revil.send("/revil/scene/" + shape + "/revealed_by", [pad.theme], function () {
-                        console.log("Changed revealed_by of " + shape + " to " + pad.theme);
-                    });
-                    return true;
+    var updateShape = function (shape) {
+        var revealedBy = [];
+        var themes = shapes[shape];
+        for (var i = 0; i < themes.length; i++) { // For each theme of the shape
+            for (var j = 0; j < pads.length; j++) { // For each pad
+                var pad = pads[j];
+                if (themes[i] === pad.theme) { // If there is a pad with a matching theme
+                    revealedBy.push(pad.markerId); // Add the pad's marker id to the shape's revealed_by
                 }
             }
         }
-        return false;
-    };
-
-    var getShapeRoute = function (shape) {
-        return {
-            "revealed_name": function (args) {
-                revealed(shape, "pad_" + args[0]);
-            }
-        };
-    };
-
-    var getShapesRoutes = function () {
-        var routes = {};
-        for (var shape in configuration) {
-            if (configuration.hasOwnProperty(shape)) {
-                routes[shape] = getShapeRoute(shape);
-            }
-        }
-        return routes;
-    };
-
-    var addPad = function (name, theme, color, dimensions, position, rotation) {
-        revil.send("/revil/scene/add_shape", [name], function () {
-            var pad = new Pad(name, theme, color, dimensions, position, rotation);
-            pads.push(pad);
+        revil.send("/revil/scene/" + shape + "/revealed_by", revealedBy, function () {
+            console.log("Changed revealed_by of " + shape + " to " + revealedBy);
         });
     };
 
+    // Sets the appropriate revealed_by parameter for each shape
+    var updateShapes = function () {
+        for (var shape in shapes) { // For each shape
+            if (shapes.hasOwnProperty(shape)) {
+                updateShape(shape);
+            }
+        }
+    };
+
+    // Triggers every 100ms
+    var update = function () {
+        updateCollaboration();
+        updateShapes();
+        draw();
+    };
+    window.setInterval(update, 100);
+
     // Triggers when a marker is detected
-    var updatePad = function (id, position, rotation) {
-        var padName = "pad_" + id;
-        var pad = getPad(padName);
+    var markerDetected = function (markerId, position, rotation) {
+        var pad = getPad(markerId);
         if (pad === null) {
-            addPad(padName, "" + (id % 3 + 1), undefined, undefined, position, rotation);
+            addPad(markerId, "" + (markerId % 3 + 1), undefined, undefined, position, rotation);
         }
         else {
             pad.position = position;
             pad.rotation = rotation;
         }
-        revil.send("/revil/scene/" + padName + "/position", [pad.position], function () {
-            console.log("Updated " + padName + " position from markers");
+        revil.send("/revil/scene/pad_" + markerId + "/position", [pad.position], function () {
+            console.log("Updated pad_" + markerId + " position from markers");
         });
-        revil.send("/revil/scene/" + padName + "/rotation", [pad.rotation], function () {
-            console.log("Updated " + padName + " rotation from markers");
+        revil.send("/revil/scene/pad_" + markerId + "/rotation", [pad.rotation], function () {
+            console.log("Updated pad_" + markerId + " rotation from markers");
         });
     };
 
@@ -179,15 +182,14 @@
                 "space": {
                     "depthcam": {
                         "marker_output": function (args) {
-                            var id = args[0];
+                            var markerId = args[0];
                             var position = {x: args[1], y: args[2], z: args[3]};
                             var rotation = {rx: args[4], ry: args[5], rz: args[6]};
-                            updatePad(id, position, rotation);
+                            markerDetected(markerId, position, rotation);
                         }
                     }
                 }
-            },
-            "scene": getShapesRoutes()
+            }
         }
     });
 
