@@ -84,7 +84,6 @@ Revil = (function Revil() {
                 });
             }
             else {
-                console.warn("Sending to unknown route '" + address + "'");
                 if (success !== undefined)
                     success();
             }
@@ -107,9 +106,6 @@ Revil = (function Revil() {
                     // Call the action method
                     route(args);
                 }
-            }
-            else {
-                console.warn("Received message '" + args + "' from unknown route '" + address + "'.");
             }
         };
 

@@ -10,7 +10,7 @@
 
 <canvas id="viewport" width="800" height="500"></canvas>
 <br/>
-<button onclick="btnClick()">Boop</button>
+<button onclick="btnClick()">Start</button>
 
 <script src="node_modules/osc/dist/osc-browser.min.js"></script>
 <script src="bundle.js"></script>
@@ -19,6 +19,8 @@
     var colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "00ffff", "ff00ff"];
 
     var pads = [];
+
+    var running;
 
     var canvas = document.getElementById("viewport").getContext("2d");
 
@@ -56,6 +58,7 @@
         this.dimensions = dimensions || {width: 100, height: 100, depth: 100};
         this.position = position || {x: 0, y: 0, z: 0};
         this.rotation = rotation || {rx: 0, ry: 0, rz: 0};
+        this.update = new Date();
     };
 
     var getPad = function (markerId) {
@@ -67,10 +70,18 @@
     };
 
     var addPad = function (markerId, theme, color, dimensions, position, rotation) {
-        revil.send("/revil/scene/add_shape", ["pad_" + markerId], function () {
-            var pad = new Pad(markerId, theme, color, dimensions, position, rotation);
-            pads.push(pad);
-        });
+        //revil.send("/revil/scene/add_shape", ["pad_" + markerId], function () {
+        var pad = new Pad(markerId, theme, color, dimensions, position, rotation);
+        pads.push(pad);
+        //});
+    };
+
+    var updatePads = function () {
+        for (var i = pads.length - 1; 0 <= i; i--) {
+            if (new Date(pads[i].update.getTime() + 1000) < new Date()) {
+                pads.splice(i, 1);
+            }
+        }
     };
 
     var shapes = {
@@ -80,16 +91,36 @@
         "shape_4": ["1+2"] // Revealed only when theme 1 and 2 collaborate
     };
 
+    // Never finds collaboration
+    var nothingDetection = function (padA, padB) {
+        return false;
+    };
+
     // Detect collaboration based on proximity of the pads
     var proxemicsDetection = function (padA, padB) {
         var deltaX = padB.position.x - padA.position.x;
         var deltaY = padB.position.y - padA.position.y;
         var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        return distance <= 2;
+        var radius = 100;
+        return distance <= radius;
+    };
+
+    // Detect collaboration if either pad looks at the other
+    var aimingDetection = function (padA, padB) {
+        var A = padA.position, B = padB.position;
+        var rA = padA.rotation.z, rB = padB.rotation.z;
+        var deltaX = B.x - A.x;
+        var deltaY = B.y - A.y;
+        var theta = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+        var alphaA = (rA - theta) % 360;
+        var alphaB = (rB - theta) % 360;
+        var alpha = (alphaB - alphaA) % 360;
+        var epsilon = 45;
+        return 180 - (epsilon / 2) <= alpha && alpha < 180 + (epsilon / 2);
     };
 
     // Detect collaboration if both pads look at each other
-    var aimingDetection = function (padA, padB) {
+    var aimingBothDetection = function (padA, padB) {
         var A = padA.position, B = padB.position;
         var rA = padA.rotation.z, rB = padB.rotation.z;
         var deltaX = B.x - A.x;
@@ -102,9 +133,25 @@
         return 180 - (epsilon / 2) <= alpha && alpha < 180 + (epsilon / 2);
     };
 
+    // Does nothing to the pads' theme
+    var nothingAffectation = function (padA, padB) {
+        return [padA.theme, padB.theme];
+    };
+
     // Changes both pads' theme to the combined theme of the pads
     var additiveAffectation = function (padA, padB) {
-        return padA.theme + "+" + padB.theme;
+        var theme = padA.theme + "+" + padB.theme;
+        return [theme, theme];
+    };
+
+    // Changes both pads' theme to the theme of the first pad
+    var overrideAffectation = function (padA, padB) {
+        return [padA.theme, padA.theme];
+    };
+
+    // Swaps the themes of each pad
+    var swapAffectation = function (padA, padB) {
+        return [padB.theme, padA.theme];
     };
 
     // Returns true if padA and padB are collaborating according to the detection method
@@ -114,9 +161,13 @@
 
     // Changes the theme of padA and padB according to the affectation method
     var collaborate = function (padA, padB, method) {
-        padA.theme = method(padA, padB);
-        padB.theme = method(padA, padB);
+        var themes = method(padA, padB);
+        padA.theme = themes[0];
+        padB.theme = themes[1];
     };
+
+    var detectionMethod = proxemicsDetection;
+    var affectationMethod = additiveAffectation;
 
     // Checks for collaboration between pads
     var updateCollaboration = function () {
@@ -125,12 +176,12 @@
                 var padA = pads[i];
                 var padB = pads[j];
                 if (padA.name !== padB.name) {
-                    if (areCollaborating(padA, padB, proxemicsDetection)) {
-                        collaborate(padA, padB, additiveAffectation);
+                    if (areCollaborating(padA, padB, detectionMethod)) {
+                        collaborate(padA, padB, affectationMethod);
                     }
                     else {
-                        padA.theme = "" + (padA.markerId % 3 + 1);
-                        padB.theme = "" + (padB.markerId % 3 + 1);
+                        padA.theme = "" + ((padA.markerId - 1) % 3 + 1);
+                        padB.theme = "" + ((padB.markerId - 1) % 3 + 1);
                     }
                 }
             }
@@ -148,11 +199,17 @@
                 }
             }
         }
-        if (revealedBy.length > 0) {
-            revil.send("/revil/scene/" + shape + "/revealed_by", revealedBy, function () {
-                console.log("Changed revealed_by of " + shape + " to " + revealedBy);
-            });
+        if (revealedBy.length === 0) { // If no pad can reveal the shape
+            if (themes.length > 0) { // If the shape should be revealed by a specific theme
+                revealedBy = ["none"]; // Hide the shape
+            }
+            else { // If the shape has no reveal specification
+                revealedBy = ["all"]; // Show the shape
+            }
         }
+        revil.send("/revil/scene/" + shape + "/revealed_by", [revealedBy.join(",")], function () {
+            //console.log("Changed revealed_by of " + shape + " to " + revealedBy);
+        });
     };
 
     // Sets the appropriate revealed_by parameter for each shape
@@ -164,23 +221,27 @@
         }
     };
 
-    // Triggers every 100ms
+    // Triggers every 50ms
     var update = function () {
-        updateCollaboration();
-        updateShapes();
-        draw();
+        if (running) {
+            updatePads();
+            updateCollaboration();
+            updateShapes();
+            draw();
+        }
     };
-    window.setInterval(update, 100);
+    window.setInterval(update, 50);
 
     // Triggers when a marker is detected
     var markerDetected = function (markerId, position, rotation) {
         var pad = getPad(markerId);
         if (pad === null) {
-            addPad(markerId, "" + (markerId % 3 + 1), undefined, undefined, position, rotation);
+            addPad(markerId, "" + ((markerId - 1) % 3 + 1), undefined, undefined, position, rotation);
         }
         else {
             pad.position = position;
             pad.rotation = rotation;
+            pad.update = new Date();
         }
         revil.send("/revil/scene/pad_" + markerId + "/position", [pad.position], function () {
             console.log("Updated pad_" + markerId + " position from markers");
@@ -197,9 +258,11 @@
                     "depthcam": {
                         "marker_output": function (args) {
                             var markerId = args[0];
-                            var position = {x: args[1], y: args[2], z: args[3]};
-                            var rotation = {rx: args[4], ry: args[5], rz: args[6]};
-                            markerDetected(markerId, position, rotation);
+                            if (markerId > 0) {
+                                var position = {x: args[1], y: args[2], z: args[3]};
+                                var rotation = {rx: args[4], ry: args[5], rz: args[6]};
+                                markerDetected(markerId, position, rotation);
+                            }
                         }
                     }
                 }
@@ -211,7 +274,7 @@
 
 
     var btnClick = function () {
-        console.log(pads);
+        running = true;
     };
 </script>
 </body>

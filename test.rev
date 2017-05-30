@@ -6,7 +6,7 @@
       <Listeners/>
     </open>
     <save>
-      <String value="/home/quentin/WebstormProjects/OSCollab/test"/>
+      <String value="/home/quentin/WebstormProjects/OSCollab/test.rev"/>
       <Listeners/>
     </save>
     <quit>
@@ -84,7 +84,7 @@
                   <Float value="0"/>
                   <Float value="0"/>
                   <Float value="0"/>
-                  <Float value="0"/>
+                  <Float value="1"/>
                 </quaternion>
                 <rotation>
                   <Float value="0"/>
@@ -97,7 +97,7 @@
                   <Float value="-700"/>
                 </absolute_position>
                 <detect_markers>
-                  <Bool value="0"/>
+                  <Bool value="1"/>
                 </detect_markers>
                 <marker_output>
                   <Float value="0"/>
@@ -107,6 +107,12 @@
                   <Float value="0"/>
                   <Float value="0"/>
                   <Float value="0"/>
+                  <Listeners>
+                    <OscListener>
+                      <Parameter value="/revil/spaces/space/depthcam/marker_output"/>
+                      <Parameter value="127.0.0.1:7000"/>
+                    </OscListener>
+                  </Listeners>
                 </marker_output>
               </Attributes>
               <Modules/>
@@ -182,7 +188,7 @@
                   <Float value="0"/>
                   <Float value="0"/>
                   <Float value="0"/>
-                  <Float value="0"/>
+                  <Float value="1"/>
                 </quaternion>
                 <rotation>
                   <Float value="0"/>
@@ -274,7 +280,7 @@
               <Float value="0"/>
               <Float value="0"/>
               <Float value="0"/>
-              <Float value="0"/>
+              <Float value="1"/>
             </quaternion>
             <rotation>
               <Float value="0"/>
@@ -403,7 +409,7 @@
               <Float value="0"/>
               <Float value="0"/>
               <Float value="0"/>
-              <Float value="0"/>
+              <Float value="1"/>
             </quaternion>
             <rotation>
               <Float value="0"/>
@@ -532,7 +538,7 @@
               <Float value="0"/>
               <Float value="0"/>
               <Float value="0"/>
-              <Float value="0"/>
+              <Float value="1"/>
             </quaternion>
             <rotation>
               <Float value="0"/>
@@ -661,7 +667,7 @@
               <Float value="0"/>
               <Float value="0"/>
               <Float value="0"/>
-              <Float value="0"/>
+              <Float value="1"/>
             </quaternion>
             <rotation>
               <Float value="0"/>
