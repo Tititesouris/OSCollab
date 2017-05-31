@@ -56,10 +56,10 @@
                   <Bool value="1"/>
                 </visible>
                 <open_device>
-                  <String value="1d27/0601@2/4"/>
+                  <String value="1d27/0601@2/5"/>
                 </open_device>
                 <mode>
-                  <String value="320x240x60"/>
+                  <String value="640x480x30"/>
                 </mode>
                 <filter>
                   <Bool value="0"/>
@@ -99,6 +99,9 @@
                 <detect_markers>
                   <Bool value="1"/>
                 </detect_markers>
+                <detection_method>
+                  <String value="flood"/>
+                </detection_method>
                 <marker_output>
                   <Float value="0"/>
                   <Float value="0"/>
@@ -127,8 +130,8 @@
                   <Bool value="1"/>
                 </active>
                 <window_dimensions>
-                  <Int value="0"/>
-                  <Int value="0"/>
+                  <Int value="596"/>
+                  <Int value="102"/>
                   <Int value="640"/>
                   <Int value="480"/>
                 </window_dimensions>
@@ -241,12 +244,6 @@
           <Attributes>
             <name>
               <String value="shape_1"/>
-              <Listeners>
-                <OscListener>
-                  <Parameter value="/revil/scene/shape_1/name"/>
-                  <Parameter value="127.0.0.1:7000"/>
-                </OscListener>
-              </Listeners>
             </name>
             <remove/>
             <visible>
@@ -256,10 +253,10 @@
               <String value="all"/>
             </visible_from>
             <revealed_by>
-              <String value="all"/>
+              <String value="1"/>
             </revealed_by>
             <shape>
-              <String value="box"/>
+              <String value="sphere"/>
             </shape>
             <dimensions>
               <Float value="100"/>
@@ -293,8 +290,8 @@
               <Float value="0"/>
             </absolute_position>
             <color>
-              <Float value="360"/>
-              <Float value="0"/>
+              <Float value="200"/>
+              <Float value="100"/>
               <Float value="100"/>
             </color>
             <surface>
@@ -370,12 +367,6 @@
           <Attributes>
             <name>
               <String value="shape_2"/>
-              <Listeners>
-                <OscListener>
-                  <Parameter value="/revil/scene/shape_2/name"/>
-                  <Parameter value="127.0.0.1:7000"/>
-                </OscListener>
-              </Listeners>
             </name>
             <remove/>
             <visible>
@@ -385,10 +376,10 @@
               <String value="all"/>
             </visible_from>
             <revealed_by>
-              <String value="all"/>
+              <String value="none"/>
             </revealed_by>
             <shape>
-              <String value="sphere"/>
+              <String value="box"/>
             </shape>
             <dimensions>
               <Float value="100"/>
@@ -422,8 +413,8 @@
               <Float value="0"/>
             </absolute_position>
             <color>
-              <Float value="360"/>
-              <Float value="0"/>
+              <Float value="100"/>
+              <Float value="100"/>
               <Float value="100"/>
             </color>
             <surface>
@@ -499,12 +490,6 @@
           <Attributes>
             <name>
               <String value="shape_3"/>
-              <Listeners>
-                <OscListener>
-                  <Parameter value="/revil/scene/shape_3/name"/>
-                  <Parameter value="127.0.0.1:7000"/>
-                </OscListener>
-              </Listeners>
             </name>
             <remove/>
             <visible>
@@ -514,7 +499,7 @@
               <String value="all"/>
             </visible_from>
             <revealed_by>
-              <String value="all"/>
+              <String value="1"/>
             </revealed_by>
             <shape>
               <String value="tube"/>
@@ -551,8 +536,8 @@
               <Float value="0"/>
             </absolute_position>
             <color>
-              <Float value="360"/>
               <Float value="0"/>
+              <Float value="100"/>
               <Float value="100"/>
             </color>
             <surface>
@@ -628,12 +613,6 @@
           <Attributes>
             <name>
               <String value="shape_4"/>
-              <Listeners>
-                <OscListener>
-                  <Parameter value="/revil/scene/shape_4/name"/>
-                  <Parameter value="127.0.0.1:7000"/>
-                </OscListener>
-              </Listeners>
             </name>
             <remove/>
             <visible>
@@ -643,7 +622,7 @@
               <String value="all"/>
             </visible_from>
             <revealed_by>
-              <String value="all"/>
+              <String value="none"/>
             </revealed_by>
             <shape>
               <String value="cone"/>
@@ -680,8 +659,8 @@
               <Float value="0"/>
             </absolute_position>
             <color>
-              <Float value="360"/>
-              <Float value="0"/>
+              <Float value="300"/>
+              <Float value="100"/>
               <Float value="100"/>
             </color>
             <surface>

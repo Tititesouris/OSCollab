@@ -113,7 +113,12 @@ Revil = (function Revil() {
         _private.ws = new osc.WebSocketPort({
             url: "ws://" + ip + ":" + port
         });
-        _private.ws.on("message", _this.receive);
+        //_private.ws.on("message", _this.receive);
+        _private.ws.on("bundle", function (bundle) {
+            for (var i = 0; i < bundle.packets.length; i++) {
+                _this.receive(bundle.packets[i]);
+            }
+        });
         _private.ws.on("ready", function () {
             console.info("Revil.js loaded");
         });

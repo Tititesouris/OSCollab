@@ -43,7 +43,7 @@
 
         for (var i = 0; i < pads.length; i++) {
             var pad = pads[i];
-            drawRect(pad.position.x, pad.position.y, pad.dimensions.width, pad.dimensions.height, pad.color, true);
+            drawRect(pad.position.x, pad.position.y, pad.dimensions.width, pad.dimensions.height, colors[pad.markerId % colors.length], true);
             drawRect(pad.position.x, pad.position.y, pad.dimensions.width, pad.dimensions.height, "#000000", false);
 
 
@@ -51,10 +51,10 @@
     };
 
 
-    var Pad = function (markerId, theme, color, dimensions, position, rotation) {
+    var Pad = function (markerId, theme, dimensions, position, rotation) {
         this.markerId = markerId;
         this.theme = theme || "1";
-        this.color = color || colors[Math.floor(Math.random() * colors.length)];
+        this.currentTheme = theme || "1";
         this.dimensions = dimensions || {width: 100, height: 100, depth: 100};
         this.position = position || {x: 0, y: 0, z: 0};
         this.rotation = rotation || {rx: 0, ry: 0, rz: 0};
@@ -101,7 +101,8 @@
         var deltaX = padB.position.x - padA.position.x;
         var deltaY = padB.position.y - padA.position.y;
         var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        var radius = 100;
+        var radius = 500;
+        console.log(distance);
         return distance <= radius;
     };
 
@@ -133,14 +134,18 @@
         return 180 - (epsilon / 2) <= alpha && alpha < 180 + (epsilon / 2);
     };
 
+    var resetAffectation = function (padA, padB) {
+        return [padA.theme, padB.theme];
+    };
+
     // Does nothing to the pads' theme
     var nothingAffectation = function (padA, padB) {
-        return [padA.theme, padB.theme];
+        return [padA.currentTheme, padB.currentTheme];
     };
 
     // Changes both pads' theme to the combined theme of the pads
     var additiveAffectation = function (padA, padB) {
-        var theme = padA.theme + "+" + padB.theme;
+        var theme = Math.min(padA.theme, padB.theme) + "+" + Math.max(padA.theme, padB.theme);
         return [theme, theme];
     };
 
@@ -162,8 +167,9 @@
     // Changes the theme of padA and padB according to the affectation method
     var collaborate = function (padA, padB, method) {
         var themes = method(padA, padB);
-        padA.theme = themes[0];
-        padB.theme = themes[1];
+        console.log(themes);
+        padA.currentTheme = themes[0];
+        padB.currentTheme = themes[1];
     };
 
     var detectionMethod = proxemicsDetection;
@@ -175,13 +181,12 @@
             for (var j = 0; j < pads.length; j++) {
                 var padA = pads[i];
                 var padB = pads[j];
-                if (padA.name !== padB.name) {
+                if (padA.markerId !== padB.markerId) {
                     if (areCollaborating(padA, padB, detectionMethod)) {
                         collaborate(padA, padB, affectationMethod);
                     }
                     else {
-                        padA.theme = "" + ((padA.markerId - 1) % 3 + 1);
-                        padB.theme = "" + ((padB.markerId - 1) % 3 + 1);
+                        collaborate(padA, padB, resetAffectation);
                     }
                 }
             }
@@ -194,7 +199,7 @@
         for (var i = 0; i < themes.length; i++) { // For each theme of the shape
             for (var j = 0; j < pads.length; j++) { // For each pad
                 var pad = pads[j];
-                if (themes[i] === pad.theme) { // If there is a pad with a matching theme
+                if (themes[i] === pad.currentTheme) { // If there is a pad with a matching theme
                     revealedBy.push(pad.markerId); // Add the pad's marker id to the shape's revealed_by
                 }
             }
@@ -236,19 +241,19 @@
     var markerDetected = function (markerId, position, rotation) {
         var pad = getPad(markerId);
         if (pad === null) {
-            addPad(markerId, "" + ((markerId - 1) % 3 + 1), undefined, undefined, position, rotation);
+            addPad(markerId, "" + ((markerId - 1) % 3 + 1), undefined, position, rotation);
         }
         else {
             pad.position = position;
             pad.rotation = rotation;
             pad.update = new Date();
         }
-        revil.send("/revil/scene/pad_" + markerId + "/position", [pad.position], function () {
-            console.log("Updated pad_" + markerId + " position from markers");
-        });
-        revil.send("/revil/scene/pad_" + markerId + "/rotation", [pad.rotation], function () {
-            console.log("Updated pad_" + markerId + " rotation from markers");
-        });
+        /*revil.send("/revil/scene/pad_" + markerId + "/position", [pad.position], function () {
+         console.log("Updated pad_" + markerId + " position from markers");
+         });
+         revil.send("/revil/scene/pad_" + markerId + "/rotation", [pad.rotation], function () {
+         console.log("Updated pad_" + markerId + " rotation from markers");
+         });*/
     };
 
     revil.addRoutes({

@@ -5,10 +5,10 @@ var osc = require("osc"), WebSocket = require("ws");
 
 var getIPAddresses = function () {
     var os = require("os"),
-    interfaces = os.networkInterfaces(),
-    ipAddresses = [];
+        interfaces = os.networkInterfaces(),
+        ipAddresses = [];
 
-    for (var deviceName in interfaces){
+    for (var deviceName in interfaces) {
         var addresses = interfaces[deviceName];
 
         for (var i = 0; i < addresses.length; i++) {
@@ -22,7 +22,6 @@ var getIPAddresses = function () {
 
     return ipAddresses;
 };
-
 
 
 var udp = new osc.UDPPort({
@@ -42,7 +41,6 @@ udp.on("ready", function () {
 });
 
 udp.open();
-
 
 
 var port = process.argv[2] || 8211;
