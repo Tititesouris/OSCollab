@@ -1,9 +1,10 @@
 {
-    "name": "OSCollab",
-    "version": "1.0.0",
-    "dependencies": {
-        "osc": "2.2.0",
-        "ws": "1.1.0"
-    }
+  "name": "OSCollab",
+  "version": "1.0.0",
+  "dependencies": {
+    "osc": "2.2.0",
+    "ws": "1.1.0",
+    "deepmerge": "latest"
+  }
 }
 
