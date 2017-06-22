@@ -52,13 +52,13 @@
 
 
     var Pad = function (markerId, theme, dimensions, position, rotation) {
-        this.markerId = markerId;
-        this.theme = theme || "1";
-        this.currentTheme = theme || "1";
+        this.markerId = markerId; // ID of the marker attached to this pad
+        this.theme = theme || "1"; // The theme associated with the marker id
+        this.currentTheme = theme || "1"; // The theme of the pad when taking collaboration into account
         this.dimensions = dimensions || {width: 100, height: 100, depth: 100};
         this.position = position || {x: 0, y: 0, z: 0};
         this.rotation = rotation || {x: 0, y: 0, z: 0};
-        this.update = new Date();
+        this.update = new Date(); // The last time the pad was updated
     };
 
     var getPad = function (markerId) {
@@ -70,7 +70,7 @@
     };
 
     var addPad = function (markerId, theme, color, dimensions, position, rotation) {
-        //revil.send("/revil/scene/add_shape", ["pad_" + markerId], function () {
+        //revil.send("/revil/scene/add_shape", ["pad_" + markerId], function () { // Create a shape for visual feedback
         var pad = new Pad(markerId, theme, color, dimensions, position, rotation);
         pads.push(pad);
         //});
@@ -90,12 +90,11 @@
     };
 
     // Detect collaboration based on proximity of the pads
-    var proxemicsDetection = function (padA, padB) {
+    var proxemicDetection = function (padA, padB) {
         var deltaX = padB.position.x - padA.position.x;
         var deltaY = padB.position.y - padA.position.y;
         var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         var radius = 500;
-        console.log(distance);
         return distance <= radius;
     };
 
@@ -110,7 +109,7 @@
     };
 
     // Detect collaboration if both pads look at each other
-    var aimingBothDetection = function (padA, padB) {
+    var mutualAimingDetection = function (padA, padB) {
         var A = padA.position, B = padB.position;
         var rA = (padA.rotation.z + 360) % 360, rB = (padB.rotation.z + 360) % 360;
         var alphaA = (Math.atan2(A.y - B.y, A.x - B.x) * (180 / Math.PI) + 360) % 360;
@@ -157,7 +156,7 @@
         padB.currentTheme = themes[1];
     };
 
-    var detectionMethod = aimingBothDetection;
+    var detectionMethod = proxemicDetection;
     var affectationMethod = additiveAffectation;
 
     // Checks for collaboration between pads
