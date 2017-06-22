@@ -13,11 +13,11 @@
 <button onclick="btnClick()">Start</button>
 
 <script src="node_modules/osc/dist/osc-browser.min.js"></script>
-<script src="shapes.js"></script>
+<script src="shapesConfig.js"></script>
 <script src="bundle.js"></script>
 <script>
     var revil = new Revil("127.0.0.1", 8211);
-    var shapes = JSON.parse(shapesConfig);
+    var shapes = shapesConfig.shapes;
     var colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "00ffff", "ff00ff"];
     var pads = [];
 

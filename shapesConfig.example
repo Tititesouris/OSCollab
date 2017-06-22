@@ -1,0 +1,8 @@
+var shapesConfig = {
+    shapes: {
+        "shape_1": ["1"], // Revealed by theme 1
+        "shape_2": ["2"], // Revealed by theme 2
+        "shape_3": ["1", "2"], // Revealed by theme 1 or 2
+        "shape_4": ["1+2"] // Revealed only by theme 1 and 2 collaborating
+    }
+};
